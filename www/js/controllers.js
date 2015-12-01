@@ -1,6 +1,6 @@
 angular.module('starter.controllers', [])
 
-.controller('AppCtrl', function ($scope, $ionicModal, $timeout, $auth, $ionicPopup) {
+.controller('AppCtrl', function ($scope, $ionicModal, $timeout, $auth, $ionicPopup, $ionicLoading) {
 
     // With the new view caching in Ionic, Controllers are only called
     // when they are recreated or on app start, instead of every page change.
@@ -30,13 +30,27 @@ angular.module('starter.controllers', [])
     };
 
     $scope.fbLogin = function () {
-
-
         alert("inside");
+    };
 
+    $scope.$on("authentication-failed", function() {
+        $auth.logout();
+        $scope.login();
 
+    });
 
-    }
+    $scope.$on("loader_show", function() {
+        $ionicLoading.show({
+            template: "loading..."
+        });
+    });
+
+    $scope.$on("loader_hide", function() {
+        $ionicLoading.hide();
+    });
+
+    //
+
 
     // Perform the login action when the user submits the login form
     $scope.doLogin = function () {
@@ -108,4 +122,14 @@ angular.module('starter.controllers', [])
   ];
 })
 
-.controller('PlaylistCtrl', function ($scope, $stateParams) {});
+.controller('PlaylistCtrl', function ($scope, $stateParams) {
+
+})
+
+.controller("meCtrl", function($scope, aboutMe) {
+    $scope.me = aboutMe;
+})
+
+.controller("friendCtrl", function($scope, friends) {
+    $scope.me = user_friends;
+});

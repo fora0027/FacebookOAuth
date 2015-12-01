@@ -31,6 +31,15 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
     });
 })
 
+    //
+    //
+
+    .config(function($httpProvider) {
+      $httpProvider.interceptors.push('httpInterceptor');
+    })
+
+    //
+    //
 
 
 .config(function($stateProvider, $urlRouterProvider) {
@@ -60,6 +69,7 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
         }
       }
     })
+
     .state('app.playlists', {
       url: '/playlists',
       views: {
@@ -69,6 +79,39 @@ angular.module('starter', ['ionic', 'starter.controllers', 'starter.services', '
         }
       }
     })
+    .state('app.user_friends', {
+      url: '/friends',
+      views: {
+        'menuContent': {
+          templateUrl: 'templates/friends.html',
+          controller: 'friendCtrl'
+        }
+      }
+    })
+      .state('app.me', {
+        url: '/me',
+        views: {
+          'menuContent': {
+            templateUrl: 'templates/me.html',
+            controller: 'meCtrl',
+            resolve: {
+              aboutMe: function($q, $rootScope, FacebookService) {
+                var deferred = $q.defer();
+
+                FacebookService.me().success( function( data ) {
+                  $rootScope.userId = data.id;
+                  deferred.resolve( data );
+                })
+                    .error(function( errorData ) {
+                      deferred.reject(errorData)
+                    });
+                return deferred.promise;
+              }
+            }
+          }
+        }
+      })
+
 
   .state('app.single', {
     url: '/playlists/:playlistId',
